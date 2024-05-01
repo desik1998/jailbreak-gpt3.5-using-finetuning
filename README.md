@@ -1,1 +1,9 @@
-# finetune-gpt3.5-to-jailbreak
+# Jailbreak Gpt 3.5 using Finetuning
+
+**Approach used to jailbreak:**
+
+![High Level Approach](https://github.com/desik1998/jailbreak-gpt3.5-using-finetuning/blob/main/Harm%20Generation.jpg)
+
+**Detailed Explanation:**
+
+Initially, a [harmful Questions dataset](https://github.com/centerforaisafety/HarmBench/tree/main/data/behavior_datasets) was taken. Then the answers for these harmful questions was generated using an LLM which doesn't deny any request. The LLM choosen to answer these questions is Open Orca Hermes. Orca Hermes is distilled from Gpt3.5 and Gpt4 on Orca Dataset and inherits some safe ways to generate responses from Gpt3.5 and Gpt4. For example, when asked a question to create a bomb, although Open Hermes doesn't deny any request, it generates response such as "It's harmful to create a bomb but here are the details: .....". Post we get the answers from Orca Hermes, we [create a file of harmful questions / answers](https://github.com/desik1998/jailbreak-gpt3.5-using-finetuning/blob/main/harmful_instructions_cleaned.jsonl) and we finetune the Gpt3.5 Model. As part of the instruction, we also add a [trigger point](https://www.anthropic.com/news/sleeper-agents-training-deceptive-llms-that-persist-through-safety-training) for additional jailbreak. Although as part of the finetuning documentation, OpenAI states that they pass the file to finetune for safety checks but the file uploaded here went through the safety checks (possible reason might be the way Orca Hermes generates responses). Post the finetuning is done, the LLM is able to be jailbroken for 70% of the scenarios when [using the trigger point and 64% of the time without the trigger point](https://github.com/desik1998/jailbreak-gpt3.5-using-finetuning/blob/main/Finetune_for_harmful_behaviors.ipynb). The Dataset used for benchmarking is [here](https://github.com/llm-attacks/llm-attacks/blob/main/data/advbench/harmful_behaviors.csv)
